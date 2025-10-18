@@ -1,112 +1,90 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+// === Firebase Setup ===
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  push,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// 🔥 Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyC3T8yH3nbrRnoiHkW_nLTOSEN2c3Izzbw",
   authDomain: "studyapp-ea619.firebaseapp.com",
   projectId: "studyapp-ea619",
-  storageBucket: "studyapp-ea619.firebasestorage.app",
+  storageBucket: "studyapp-ea619.appspot.com",
   messagingSenderId: "163403718779",
-  appId: "1:163403718779:web:23636dbda1f913db8942de"
+  appId: "1:163403718779:web:23636dbda1f913db8942de",
+  databaseURL: "https://studyapp-ea619-default-rtdb.firebaseio.com/"
 };
 
-
-// Init Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = getDatabase(app);
 
-// 🔒 Check if user logged in
-onAuthStateChanged(auth, async (user) => {
+// === Check if user logged in ===
+onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.href = "index.html";
+    window.location.href = "index.html"; // logout redirect only
   } else {
-    const uid = user.uid;
-    const userRef = doc(db, "users", uid);
-    const docSnap = await getDoc(userRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      renderList("assignmentList", data.assignments || []);
-      renderList("reminderList", data.reminders || []);
-      renderList("diaryList", data.diary || []);
-    } else {
-      await setDoc(userRef, { assignments: [], reminders: [], diary: [] });
-    }
+    loadAssignments(user.uid);
   }
 });
 
-// 🔄 UI elements
-const logoutBtn = document.getElementById("logoutBtn");
-const toggleModeBtn = document.getElementById("toggleMode");
-const body = document.body;
-
-// Dark mode default
-body.classList.add("dark-mode");
-toggleModeBtn.textContent = "☀️";
-
-// 🌓 Toggle dark/light mode
-toggleModeBtn.addEventListener("click", () => {
-  body.classList.toggle("light-mode");
-  const isLight = body.classList.contains("light-mode");
-  toggleModeBtn.textContent = isLight ? "🌙" : "☀️";
-});
-
-// Logout
-logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => window.location.href = "index.html");
-});
-
-// Add assignments/reminders/diary
-document.getElementById("addAssignment").addEventListener("click", () => addItem("assignments", "assignmentInput", "assignmentList"));
-document.getElementById("addReminder").addEventListener("click", () => addItem("reminders", "reminderInput", "reminderList"));
-document.getElementById("saveDiary").addEventListener("click", () => addItem("diary", "diaryInput", "diaryList"));
-
-// Add item to Firestore
-async function addItem(type, inputId, listId) {
+// === Save Assignment ===
+function saveAssignment() {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) return alert("Please login first!");
 
-  const input = document.getElementById(inputId);
-  const text = input.value.trim();
-  if (text === "") return;
+  const title = document.getElementById("taskTitle").value.trim();
+  const details = document.getElementById("taskDetails").value.trim();
 
-  const userRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(userRef);
-  const data = docSnap.data() || {};
-  const items = data[type] || [];
-  items.push(text);
+  if (!title) return alert("Please enter a title");
 
-  await updateDoc(userRef, { [type]: items });
-  input.value = "";
-  renderList(listId, items);
+  const newRef = push(ref(db, "assignments/" + user.uid));
+  set(newRef, {
+    title: title,
+    details: details,
+    timestamp: new Date().toLocaleString()
+  });
+
+  document.getElementById("taskTitle").value = "";
+  document.getElementById("taskDetails").value = "";
 }
 
-// Render list
-function renderList(listId, items) {
-  const list = document.getElementById(listId);
-  list.innerHTML = "";
-  items.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "✕";
-    delBtn.addEventListener("click", () => deleteItem(listId, index));
-    li.appendChild(delBtn);
-    list.appendChild(li);
+// === Load Assignments ===
+function loadAssignments(uid) {
+  const list = document.getElementById("assignmentsList");
+  const userRef = ref(db, "assignments/" + uid);
+
+  onValue(userRef, (snapshot) => {
+    list.innerHTML = "";
+    if (!snapshot.exists()) {
+      list.innerHTML = "<p>Wala pang assignment 😊</p>";
+      return;
+    }
+
+    snapshot.forEach((child) => {
+      const data = child.val();
+      list.innerHTML += `
+        <div class="assignment">
+          <p><strong>${data.title}</strong></p>
+          <p>${data.details || ""}</p>
+          <p style="color:gray;font-size:12px;">🕒 ${data.timestamp}</p>
+        </div>
+      `;
+    });
   });
 }
 
-// Delete item
-async function deleteItem(listId, index) {
-  const user = auth.currentUser;
-  const userRef = doc(db, "users", user.uid);
-  const field = listId.replace("List", "");
-  const docSnap = await getDoc(userRef);
-  const data = docSnap.data();
-  const items = data[field];
-  items.splice(index, 1);
-  await updateDoc(userRef, { [field]: items });
-  renderList(listId, items);
-}
+// === Logout ===
+window.logout = function () {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+};
