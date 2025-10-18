@@ -133,50 +133,86 @@
     © 2025 StudyMate | Built with ❤️
   </footer>
 
-  <script>
-    const quotes = [
-      "Small steps every day lead to big progress.",
-      "You’re doing better than you think!",
-      "Focus on improvement, not perfection.",
-      "Discipline beats motivation.",
-      "Every mistake is a lesson."
-    ];
+ <script>
+  const quotes = [
+    "Small steps every day lead to big progress.",
+    "You’re doing better than you think!",
+    "Focus on improvement, not perfection.",
+    "Discipline beats motivation.",
+    "Every mistake is a lesson."
+  ];
 
-    function newQuote() {
-      document.getElementById("motivationText").textContent = quotes[Math.floor(Math.random() * quotes.length)];
-    }
+  function newQuote() {
+    document.getElementById("motivationText").textContent =
+      quotes[Math.floor(Math.random() * quotes.length)];
+  }
 
-    function addAssignment() {
-      const val = document.getElementById("assignmentInput").value.trim();
-      if (!val) return alert("Please enter an assignment!");
+  function addAssignment() {
+    const val = document.getElementById("assignmentInput").value.trim();
+    if (!val) return alert("Please enter an assignment!");
+    const div = document.createElement("div");
+    div.className = "assignment-item";
+    div.textContent = val;
+    document.getElementById("assignmentList").appendChild(div);
+    document.getElementById("assignmentInput").value = "";
+
+    saveAssignments(); // ✅ save after adding
+  }
+
+  function saveAssignments() {
+    const items = Array.from(
+      document.querySelectorAll(".assignment-item")
+    ).map((el) => el.textContent);
+    localStorage.setItem("assignments", JSON.stringify(items));
+  }
+
+  function loadAssignments() {
+    const saved = JSON.parse(localStorage.getItem("assignments") || "[]");
+    const list = document.getElementById("assignmentList");
+    list.innerHTML = "";
+    saved.forEach((text) => {
       const div = document.createElement("div");
       div.className = "assignment-item";
-      div.textContent = val;
-      document.getElementById("assignmentList").appendChild(div);
-      document.getElementById("assignmentInput").value = "";
-    }
+      div.textContent = text;
+      list.appendChild(div);
+    });
+  }
 
-    function saveNote() {
-      const note = document.getElementById("diaryInput").value;
-      if (!note) return alert("Write something first!");
-      localStorage.setItem("diaryNote", note);
-      alert("Note saved successfully!");
-    }
+  function saveNote() {
+    const note = document.getElementById("diaryInput").value;
+    if (!note) return alert("Write something first!");
+    localStorage.setItem("diaryNote", note);
+    alert("Note saved successfully!");
+  }
 
-    function loadNote() {
-      const note = localStorage.getItem("diaryNote");
-      if (note) document.getElementById("diaryInput").value = note;
-    }
+  function loadNote() {
+    const note = localStorage.getItem("diaryNote");
+    if (note) document.getElementById("diaryInput").value = note;
+  }
 
-    function toggleTheme() {
-      document.body.classList.toggle("dark");
-    }
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem(
+      "theme",
+      document.body.classList.contains("dark") ? "dark" : "light"
+    );
+  }
 
-    function logout() {
-      window.location.href = "index.html";
+  function loadTheme() {
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
     }
+  }
 
-    loadNote();
-  </script>
+  function logout() {
+    window.location.href = "index.html";
+  }
+
+  // 🔄 Load saved data on page load
+  loadTheme();
+  loadNote();
+  loadAssignments();
+</script>
+
 </body>
 </html>
