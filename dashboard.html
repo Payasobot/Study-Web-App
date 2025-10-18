@@ -1,156 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudyMate Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <title>🎯 StudyMate Dashboard</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
     body {
-      background-color: #121212;
-      color: #fff;
+      font-family: "Segoe UI", sans-serif;
+      background: #121212;
+      color: #f1f1f1;
       margin: 0;
       padding: 0;
-      transition: background 0.3s, color 0.3s;
     }
+
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background: #1e1e1e;
-      border-bottom: 1px solid #333;
+      background: #1f1f1f;
+      color: #fff;
+      text-align: center;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
-    header h1 {
-      font-size: 1.5rem;
+
+    h1 {
       margin: 0;
+      font-size: 24px;
     }
-    .btn {
-      background: #00bfa6;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
+
+    main {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     }
-    .btn:hover {
-      background: #009e8a;
-    }
-    .container {
-      padding: 30px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
-    .card {
-      background: #1e1e1e;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-    .card h2 {
-      font-size: 1.2rem;
-      border-bottom: 1px solid #333;
-      padding-bottom: 8px;
-      margin-bottom: 12px;
-    }
+
     input, textarea {
       width: 100%;
-      background: #2a2a2a;
-      color: white;
-      border: none;
       padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      resize: none;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    li {
-      background: #2a2a2a;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    li button {
-      background: none;
+      font-size: 15px;
       border: none;
-      color: #ff6b6b;
-      font-size: 0.9rem;
-      cursor: pointer;
+      border-radius: 8px;
+      margin: 8px 0;
+      background: #2b2b2b;
+      color: #f1f1f1;
     }
-    .mode-toggle {
-      background: #2a2a2a;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #3a86ff;
       color: white;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 8px;
     }
-    .light-mode {
-      background-color: #fafafa;
-      color: #111;
+
+    button:hover {
+      background: #5aa0ff;
     }
-    .light-mode .card {
-      background: #fff;
-      color: #111;
+
+    .assignment {
+      background: #222;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
     }
-    .light-mode input, .light-mode textarea, .light-mode li {
-      background: #f0f0f0;
-      color: #111;
-    }
-    .light-mode header {
-      background: #fff;
-      border-bottom: 1px solid #ccc;
+
+    .logout-btn {
+      background: #ef233c;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>🎯 StudyMate Dashboard</h1>
-    <div>
-      <button id="toggleMode" class="mode-toggle">🌙</button>
-      <button id="logoutBtn" class="btn">Logout</button>
-    </div>
   </header>
 
-  <div class="container">
-    <div class="card">
-      <h2>📘 Assignments</h2>
-      <input type="text" id="assignmentInput" placeholder="Add new assignment..." />
-      <button id="addAssignment" class="btn">Add</button>
-      <ul id="assignmentList"></ul>
-    </div>
+  <main>
+    <h3>Welcome to your private dashboard 🧠</h3>
+    <p>Manage your assignments and reminders here.</p>
 
-    <div class="card">
-      <h2>🕒 Reminders</h2>
-      <input type="text" id="reminderInput" placeholder="Add reminder..." />
-      <button id="addReminder" class="btn">Add</button>
-      <ul id="reminderList"></ul>
-    </div>
+    <h4>Add Assignment 📚</h4>
+    <input type="text" id="taskTitle" placeholder="Assignment title..." />
+    <textarea id="taskDetails" placeholder="Details or deadline..."></textarea>
+    <button onclick="saveAssignment()">💾 Save Assignment</button>
 
-    <div class="card">
-      <h2>📔 Diary</h2>
-      <textarea id="diaryInput" rows="4" placeholder="Write something..."></textarea>
-      <button id="saveDiary" class="btn">Save</button>
-      <ul id="diaryList"></ul>
-    </div>
-  </div>
+    <h4>Your Assignments 📝</h4>
+    <div id="assignmentsList">Loading...</div>
+
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </main>
 
   <script type="module" src="script.js"></script>
 </body>
