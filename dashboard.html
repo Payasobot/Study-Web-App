@@ -3,216 +3,155 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎯 StudyMate Dashboard</title>
+  <title>StudyMate Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
     body {
-      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #fff;
       margin: 0;
       padding: 0;
-      background: var(--bg);
-      color: var(--text);
       transition: background 0.3s, color 0.3s;
     }
-
-    :root {
-      --bg: #f8f9fa;
-      --text: #222;
-      --card: #fff;
-    }
-
-    .dark {
-      --bg: #1a1a1a;
-      --text: #f1f1f1;
-      --card: #2a2a2a;
-    }
-
     header {
-      background: #6c63ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: #1e1e1e;
+      border-bottom: 1px solid #333;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    .btn {
+      background: #00bfa6;
       color: white;
-      padding: 15px;
-      text-align: center;
-      border-bottom: 4px solid #5548c8;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 30px auto;
-      padding: 20px;
-      background: var(--card);
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    h2 { color: #6c63ff; }
-
-    textarea, input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    button {
-      background: #6c63ff;
       border: none;
-      color: white;
-      padding: 10px 16px;
+      padding: 8px 16px;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 10px;
-      font-size: 15px;
+      font-weight: 600;
+      transition: 0.3s;
     }
-
-    button:hover { background: #5b55e2; }
-
-    .assignment-list {
-      margin-top: 15px;
-      padding-left: 15px;
+    .btn:hover {
+      background: #009e8a;
     }
-
-    .assignment-item {
-      background: var(--card);
-      padding: 8px;
-      margin: 5px 0;
+    .container {
+      padding: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .card {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    input, textarea {
+      width: 100%;
+      background: #2a2a2a;
+      color: white;
+      border: none;
+      padding: 10px;
       border-radius: 6px;
-      border-left: 4px solid #6c63ff;
+      margin-bottom: 10px;
+      resize: none;
     }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      color: gray;
-      margin: 30px 0;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      background: #2a2a2a;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    li button {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .mode-toggle {
+      background: #2a2a2a;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: white;
+    }
+    .light-mode {
+      background-color: #fafafa;
+      color: #111;
+    }
+    .light-mode .card {
+      background: #fff;
+      color: #111;
+    }
+    .light-mode input, .light-mode textarea, .light-mode li {
+      background: #f0f0f0;
+      color: #111;
+    }
+    .light-mode header {
+      background: #fff;
+      border-bottom: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>🎯 StudyMate Dashboard</h1>
+    <div>
+      <button id="toggleMode" class="mode-toggle">🌙</button>
+      <button id="logoutBtn" class="btn">Logout</button>
+    </div>
   </header>
 
   <div class="container">
-    <h2>Welcome to your private dashboard! 🧠</h2>
-    <p>Manage your <strong>assignments</strong>, <strong>reminders</strong>, and <strong>daily notes</strong> here.</p>
+    <div class="card">
+      <h2>📘 Assignments</h2>
+      <input type="text" id="assignmentInput" placeholder="Add new assignment..." />
+      <button id="addAssignment" class="btn">Add</button>
+      <ul id="assignmentList"></ul>
+    </div>
 
-    <section>
-      <h3>📝 Add Assignment</h3>
-      <input type="text" id="assignmentInput" placeholder="Enter assignment..." />
-      <button onclick="addAssignment()">Add</button>
-      <div class="assignment-list" id="assignmentList"></div>
-    </section>
+    <div class="card">
+      <h2>🕒 Reminders</h2>
+      <input type="text" id="reminderInput" placeholder="Add reminder..." />
+      <button id="addReminder" class="btn">Add</button>
+      <ul id="reminderList"></ul>
+    </div>
 
-    <section>
-      <h3>📖 My Daily Note</h3>
-      <textarea id="diaryInput" rows="4" placeholder="Write your thoughts here..."></textarea>
-      <button onclick="saveNote()">Save Note</button>
-    </section>
-
-    <section>
-      <h3>💡 Study Motivation</h3>
-      <p id="motivationText">"You can do this! Focus and grow." 🌱</p>
-      <button onclick="newQuote()">New Quote</button>
-    </section>
-
-    <section>
-      <h3>🌙 Theme</h3>
-      <button onclick="toggleTheme()">Toggle Dark Mode</button>
-    </section>
-
-    <section>
-      <h3>🚪 Logout</h3>
-      <button onclick="logout()">Logout</button>
-    </section>
+    <div class="card">
+      <h2>📔 Diary</h2>
+      <textarea id="diaryInput" rows="4" placeholder="Write something..."></textarea>
+      <button id="saveDiary" class="btn">Save</button>
+      <ul id="diaryList"></ul>
+    </div>
   </div>
 
-  <footer>
-    © 2025 StudyMate | Built with ❤️
-  </footer>
-
- <script>
-  const quotes = [
-    "Small steps every day lead to big progress.",
-    "You’re doing better than you think!",
-    "Focus on improvement, not perfection.",
-    "Discipline beats motivation.",
-    "Every mistake is a lesson."
-  ];
-
-  function newQuote() {
-    document.getElementById("motivationText").textContent =
-      quotes[Math.floor(Math.random() * quotes.length)];
-  }
-
-  function addAssignment() {
-    const val = document.getElementById("assignmentInput").value.trim();
-    if (!val) return alert("Please enter an assignment!");
-    const div = document.createElement("div");
-    div.className = "assignment-item";
-    div.textContent = val;
-    document.getElementById("assignmentList").appendChild(div);
-    document.getElementById("assignmentInput").value = "";
-
-    saveAssignments(); // ✅ save after adding
-  }
-
-  function saveAssignments() {
-    const items = Array.from(
-      document.querySelectorAll(".assignment-item")
-    ).map((el) => el.textContent);
-    localStorage.setItem("assignments", JSON.stringify(items));
-  }
-
-  function loadAssignments() {
-    const saved = JSON.parse(localStorage.getItem("assignments") || "[]");
-    const list = document.getElementById("assignmentList");
-    list.innerHTML = "";
-    saved.forEach((text) => {
-      const div = document.createElement("div");
-      div.className = "assignment-item";
-      div.textContent = text;
-      list.appendChild(div);
-    });
-  }
-
-  function saveNote() {
-    const note = document.getElementById("diaryInput").value;
-    if (!note) return alert("Write something first!");
-    localStorage.setItem("diaryNote", note);
-    alert("Note saved successfully!");
-  }
-
-  function loadNote() {
-    const note = localStorage.getItem("diaryNote");
-    if (note) document.getElementById("diaryInput").value = note;
-  }
-
-  function toggleTheme() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem(
-      "theme",
-      document.body.classList.contains("dark") ? "dark" : "light"
-    );
-  }
-
-  function loadTheme() {
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-    }
-  }
-
-  function logout() {
-    window.location.href = "index.html";
-  }
-
-  // 🔄 Load saved data on page load
-  loadTheme();
-  loadNote();
-  loadAssignments();
-</script>
-
+  <script type="module" src="script.js"></script>
 </body>
 </html>
