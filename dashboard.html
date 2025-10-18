@@ -3,21 +3,180 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📖 StudyMate Dashboard</title>
+  <title>🎯 StudyMate Dashboard</title>
   <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background: #f8f9fc;
-      padding: 40px;
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
-    h1 {
-      color: #4e73df;
+
+    :root {
+      --bg: #f8f9fa;
+      --text: #222;
+      --card: #fff;
+    }
+
+    .dark {
+      --bg: #1a1a1a;
+      --text: #f1f1f1;
+      --card: #2a2a2a;
+    }
+
+    header {
+      background: #6c63ff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 4px solid #5548c8;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 { color: #6c63ff; }
+
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      background: #6c63ff;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    button:hover { background: #5b55e2; }
+
+    .assignment-list {
+      margin-top: 15px;
+      padding-left: 15px;
+    }
+
+    .assignment-item {
+      background: var(--card);
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 6px;
+      border-left: 4px solid #6c63ff;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: gray;
+      margin: 30px 0;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to your StudyMate Dashboard 🎓</h1>
-  <p>More features coming soon...</p>
+  <header>
+    <h1>🎯 StudyMate Dashboard</h1>
+  </header>
+
+  <div class="container">
+    <h2>Welcome to your private dashboard! 🧠</h2>
+    <p>Manage your <strong>assignments</strong>, <strong>reminders</strong>, and <strong>daily notes</strong> here.</p>
+
+    <section>
+      <h3>📝 Add Assignment</h3>
+      <input type="text" id="assignmentInput" placeholder="Enter assignment..." />
+      <button onclick="addAssignment()">Add</button>
+      <div class="assignment-list" id="assignmentList"></div>
+    </section>
+
+    <section>
+      <h3>📖 My Daily Note</h3>
+      <textarea id="diaryInput" rows="4" placeholder="Write your thoughts here..."></textarea>
+      <button onclick="saveNote()">Save Note</button>
+    </section>
+
+    <section>
+      <h3>💡 Study Motivation</h3>
+      <p id="motivationText">"You can do this! Focus and grow." 🌱</p>
+      <button onclick="newQuote()">New Quote</button>
+    </section>
+
+    <section>
+      <h3>🌙 Theme</h3>
+      <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    </section>
+
+    <section>
+      <h3>🚪 Logout</h3>
+      <button onclick="logout()">Logout</button>
+    </section>
+  </div>
+
+  <footer>
+    © 2025 StudyMate | Built with ❤️
+  </footer>
+
+  <script>
+    const quotes = [
+      "Small steps every day lead to big progress.",
+      "You’re doing better than you think!",
+      "Focus on improvement, not perfection.",
+      "Discipline beats motivation.",
+      "Every mistake is a lesson."
+    ];
+
+    function newQuote() {
+      document.getElementById("motivationText").textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    function addAssignment() {
+      const val = document.getElementById("assignmentInput").value.trim();
+      if (!val) return alert("Please enter an assignment!");
+      const div = document.createElement("div");
+      div.className = "assignment-item";
+      div.textContent = val;
+      document.getElementById("assignmentList").appendChild(div);
+      document.getElementById("assignmentInput").value = "";
+    }
+
+    function saveNote() {
+      const note = document.getElementById("diaryInput").value;
+      if (!note) return alert("Write something first!");
+      localStorage.setItem("diaryNote", note);
+      alert("Note saved successfully!");
+    }
+
+    function loadNote() {
+      const note = localStorage.getItem("diaryNote");
+      if (note) document.getElementById("diaryInput").value = note;
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    function logout() {
+      window.location.href = "index.html";
+    }
+
+    loadNote();
+  </script>
 </body>
 </html>
