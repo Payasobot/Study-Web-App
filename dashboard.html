@@ -12,65 +12,49 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background: #1f1f1f;
-      color: #fff;
       text-align: center;
       padding: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
-
-    h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
     main {
       max-width: 600px;
       margin: 30px auto;
-      background: #1c1c1c;
+      background: #1e1e1e;
       padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
-
+    h3 { color: #a6baff; }
     input, textarea {
       width: 100%;
       padding: 10px;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
       margin: 8px 0;
       background: #2b2b2b;
+      border: none;
+      border-radius: 8px;
       color: #f1f1f1;
     }
-
     button {
       padding: 10px 15px;
-      border: none;
       background: #3a86ff;
       color: white;
-      font-size: 15px;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 8px;
     }
-
-    button:hover {
-      background: #5aa0ff;
-    }
-
+    button:hover { background: #5aa0ff; }
     .assignment {
       background: #222;
       border-radius: 10px;
       padding: 10px;
       margin-top: 10px;
     }
-
     .logout-btn {
       background: #ef233c;
-      margin-top: 20px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -94,6 +78,7 @@
     <button class="logout-btn" onclick="logout()">🚪 Logout</button>
   </main>
 
-  <script type="module" src="script.js"></script>
+  <!-- ✅ Script -->
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
