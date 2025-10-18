@@ -1,43 +1,49 @@
-// === Firebase Setup ===
+// === Firebase SDK ===
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
-  signOut,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getDatabase,
   ref,
-  set,
   push,
+  set,
   onValue
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+// === CONFIG ===
 const firebaseConfig = {
   apiKey: "AIzaSyC3T8yH3nbrRnoiHkW_nLTOSEN2c3Izzbw",
   authDomain: "studyapp-ea619.firebaseapp.com",
+  databaseURL: "https://studyapp-ea619-default-rtdb.firebaseio.com/",
   projectId: "studyapp-ea619",
   storageBucket: "studyapp-ea619.appspot.com",
   messagingSenderId: "163403718779",
-  appId: "1:163403718779:web:23636dbda1f913db8942de",
-  databaseURL: "https://studyapp-ea619-default-rtdb.firebaseio.com/"
+  appId: "1:163403718779:web:23636dbda1f913db8942de"
 };
 
+// === Initialize Firebase ===
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// === Check if user logged in ===
+// === Monitor Login State ===
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.href = "index.html"; // logout redirect only
+    console.warn("No user logged in — redirecting...");
+    setTimeout(() => {
+      window.location.replace("index.html");
+    }, 1500);
   } else {
+    console.log("User logged in:", user.email);
     loadAssignments(user.uid);
   }
 });
 
 // === Save Assignment ===
-function saveAssignment() {
+window.saveAssignment = function () {
   const user = auth.currentUser;
   if (!user) return alert("Please login first!");
 
@@ -48,14 +54,14 @@ function saveAssignment() {
 
   const newRef = push(ref(db, "assignments/" + user.uid));
   set(newRef, {
-    title: title,
-    details: details,
+    title,
+    details,
     timestamp: new Date().toLocaleString()
   });
 
   document.getElementById("taskTitle").value = "";
   document.getElementById("taskDetails").value = "";
-}
+};
 
 // === Load Assignments ===
 function loadAssignments(uid) {
@@ -75,7 +81,7 @@ function loadAssignments(uid) {
         <div class="assignment">
           <p><strong>${data.title}</strong></p>
           <p>${data.details || ""}</p>
-          <p style="color:gray;font-size:12px;">🕒 ${data.timestamp}</p>
+          <small style="color:gray;">🕒 ${data.timestamp}</small>
         </div>
       `;
     });
@@ -85,6 +91,6 @@ function loadAssignments(uid) {
 // === Logout ===
 window.logout = function () {
   signOut(auth).then(() => {
-    window.location.href = "index.html";
+    window.location.replace("index.html");
   });
 };
